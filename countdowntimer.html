@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+p {
+  text-align: center;
+  margin-top: 15%;
+  font-family:Sans-serif;
+  font-weight: bold;
+}
+
+body {
+  background-color: pink;
+}
+
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.bottom{
+
+    position: fixed; 
+    bottom:20px;
+}
+
+.stop{
+	background-color: red;
+    position: fixed; 
+    bottom:20px;
+	right: 20px;
+}
+
+</style>
+</head>
+<body id='body'>
+
+<p id="demo"></p>
+
+
+<button class="button bottom" onclick='start()'>Start / Reset</button>
+
+
+<button class="button bottom" style='left: 20%' onclick='countDownTimeSeconds = 180; start()'>3 min</button>
+<button class="button bottom" style='left: 30%' onclick='countDownTimeSeconds=240; start()'>4 min</button>
+<button class="button bottom" style='left: 40%' onclick='countDownTimeSeconds=300; start()'>5 min</button>
+
+<button class="button bottom stop right" onclick='stop()'>Stop</button>
+
+<audio id="myAudio">
+  <source src="boxing.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+
+
+
+<script>
+// Set the date we're counting down to in seconds
+var countDownTimeSeconds = 180;   //180 = 3min,   240 = 4 min
+
+
+
+var countDownDate  = 0;
+var audio = document.getElementById("myAudio"); 
+var timer = 0;
+
+function start(){
+	audio.play();
+	setStartTime();
+	if (timer > 0 ){
+		clearTimeout(timer);
+		timer = 0;
+	}
+	udateTime();
+	document.body.style.backgroundColor = "pink";
+}
+
+function stop()
+{
+	clearTimeout(timer);
+	document.body.style.backgroundColor = "yellow";
+}
+
+function setStartTime(){
+	countDownDate = new Date().getTime() + (1000 * (countDownTimeSeconds + 1));
+//var countDownDate = new Date().getTime() + 1000 * 60 * 3;
+}
+//setStartTime();
+function formatTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
+
+// Update the count down every 1 second
+function udateTime(){
+	timer = setInterval(function() {
+
+	  // Get today's date and time
+	  var now = new Date().getTime();
+		
+	  // Find the distance between now and the count down date
+	  var distance = countDownDate - now;
+
+	  // Time calculations for  minutes and seconds
+	  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+	  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+		
+	  // Output the result in an element with id="demo"
+	  document.getElementById("demo").innerHTML =  "<span style='font-size:200px'>" + minutes + ":" + formatTime(seconds) + "</span><span style='font-size:72px'>s</span> ";
+		
+	  // If the count down is over, write some text 
+	  if (distance <= 1000) {
+		setStartTime();
+		audio.play();
+		if ( document.body.style.backgroundColor == 'lightblue' )
+		{
+			document.body.style.backgroundColor = "pink";
+		}
+		else
+		{
+			document.body.style.backgroundColor = "lightblue";
+		}
+		document.getElementById("demo").innerHTML = "<span style='font-size:200px'>0:00</span><span style='font-size:72px'>s</span> ";
+	  }
+	}, 1000);
+}
+</script>
+
+</body>
+</html>
