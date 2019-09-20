@@ -103,6 +103,10 @@ body {
   Your browser does not support the audio element.
 </audio>
 
+<audio id="censoredSound">
+  <source src="censored.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
 
 <script>
 // Set the date we're counting down to in seconds
@@ -113,6 +117,7 @@ var countDownTimeSeconds = 180;   //180 = 3min,   240 = 4 min
 var countDownDate  = 0;
 var gongSound = document.getElementById("gongSound"); 
 var beepSound = document.getElementById("beepSound"); 
+var censoredSound = document.getElementById("censoredSound"); 
 var timer = 0;
 var warningTime=0;
 var betweenRoundsTime=0;
@@ -177,12 +182,17 @@ function udateTime(){
 	  var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
 		
 	  // Output the result in an element with id="demo"
-	  document.getElementById("demo").innerHTML =  message + "<span style='font-size:250px'>"  + minutes + ":" + formatTime(seconds) + "</span><span style='font-size:72px'>s</span> ";
+	  document.getElementById("demo").innerHTML =  message + "<span style='font-size:300px'>"  + minutes + ":" + formatTime(seconds) + "</span><span style='font-size:72px'>s</span> ";
 		
 		  // If the count down is over, write some text 
 	  if (remainingTime <= (1000*warningTime) ) {
 			beepSound.play();
 		}
+		// play a beep at 60 seconds to go
+		if (minutes  == 1  && seconds == 0 ) {
+			censoredSound.play();
+		}
+		
 		
 	  // If the count down is over, write some text 
 	  if (remainingTime <= 1000) {
@@ -196,7 +206,7 @@ function udateTime(){
 		{
 			document.body.style.backgroundColor = "lightblue";
 		}
-		document.getElementById("demo").innerHTML = "<span style='font-size:250px'>0:00</span><span style='font-size:72px'>s</span> ";
+		document.getElementById("demo").innerHTML = "<span style='font-size:300px'>0:00</span><span style='font-size:72px'>s</span> ";
 		
 		if ( betweenRoundsTime > 0 && betweenRoundsFirst  ){
 			document.body.style.backgroundColor = "yellow";
