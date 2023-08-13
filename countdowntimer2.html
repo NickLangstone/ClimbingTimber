@@ -1,0 +1,442 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<style>
+
+
+body {
+  background-color: pink;
+}
+
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 6vh;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+  margin-left: 20px;
+  vertical-align: middle;
+}
+
+
+
+.stop{
+	background-color: red;
+}
+
+.pause{
+	background-color: grey;
+	display: none;
+}
+.resume{
+	background-color: greenyellow;
+	display: none;
+}
+
+
+/**
+ * checkbox
+ */
+/* The container */
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  font-weight: 100;
+  height: 18px;
+ 
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #4CAF50;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 20px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.dropdownLabels{
+	font-size: 3vh;
+	margin-bottom: 0.85vh;
+	
+}
+
+.displayTime
+{
+	text-align: center;
+	line-height: 0.85;
+	padding: 0; 
+    margin: 0;
+}
+.dTime {
+	font-size:  65vh;
+	font-weight: bold;
+}
+.dUnits	{
+	font-size:  10vh;
+}
+
+.dMessage{
+	font-size:  28vh;
+	font-weight: bold;
+}
+
+
+/* Create four equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 25%;
+  margin-left: 20px;
+
+}
+
+/* Clear floats after the columns */
+.row{
+  position: absolute;
+  bottom: 10px;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+</style>
+</head>
+<body id='body'>
+
+<div id="displayTime"  class="displayTime">
+	<span id="dTime" class="dTime" >0.00</span>
+	<span id="dUnits" class="dUnits">Sec</span>
+	<div id="dMessage" class="dMessage"></div>
+ 
+</div>
+
+<p></p>
+
+
+<div class=" row"  >
+	<div class="column" style="width:26%;  overflow: hidden; " >
+		<button id="startButton" class="button "   onclick='start()'>Start</button>
+		<button id="pauseButton" class="button  pause"   onclick='pause()'>Pause</button>
+		<button id="resumeButton" class="button  resume"   onclick='resume()'>Resume</button>
+	</div>
+	<div class="column" >
+		<div class="dropdownLabels   ">Round time:
+			<select id="RoundTime" onchange="roundsTimeChange();" >
+			<option value="5">5 seconds</option>
+			<option value="60">1 Minute</option>
+			<option value="120">2 Minutes</option>
+			<option value="180">3 Minutes</option>
+			<option value="240">4 Minutes</option>
+			<option value="300" selected>5 Minutes</option>
+			<option value="360">6 Minutes</option>
+			<option value="420">7 Minutes</option>
+			<option value="480">8 Minutes</option>
+			<option value="540">9 Minutes</option>
+			<option value="600">10 Minutes</option>
+			</select>
+		</div>
+
+		<div class="dropdownLabels" >Warning Time: 
+			<select id="WarningTime" onchange="warningTimeChange();">
+			<option value="0" selected>0 Sec</option>
+			<option value="5">5 Sec</option>
+			<option value="10">10 Sec</option>
+			<option value="15">15 Sec</option>
+			<option value="20">20 Sec</option>
+			</select>
+		</div>
+	</div>
+	<div class="column" >
+		<div class="dropdownLabels">Time Between Rounds:
+			<select id="BetweenTime" onchange="betweenRoundsTimeChange();" >
+			<option value="0" selected>0</option>
+			<option value="5">5 Sec</option>
+			<option value="10">10 Sec</option>
+			<option value="15">15 Sec</option>
+			<option value="20">20 Sec</option>
+			<option value="30">30 Sec</option>
+			<option value="45">45 Sec</option>
+			<option value="60">60 Sec</option>
+			</select>
+		</div>
+
+		<label class="container dropdownLabels">Start with change timer
+		<input id="startWithChange" type="checkbox">
+		<span class="checkmark"></span>
+		</label>
+	</div>
+
+	<div class="column" style="width:11%">
+		<button class="button  stop " onclick='stop()'>Stop</button>
+	</div>
+</div>
+
+
+
+
+
+<audio id="gongSound">
+  <source src="boxing.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<audio id="beepSound">
+  <source src="beep.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<audio id="censoredSound">
+  <source src="censored.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+// Set the date we're counting down to in seconds
+var countDownTimeSeconds = 300;   //180 = 3min,   240 = 4 min
+
+var remainingSeconds = 0;
+var countDownDate  = 0;
+var gongSound = document.getElementById("gongSound"); 
+var beepSound = document.getElementById("beepSound"); 
+var censoredSound = document.getElementById("censoredSound"); 
+var timer = 0;
+var warningTime=0;
+var betweenRoundsTime=0;
+var betweenRoundsFirst=true;
+var message = "";
+
+function start(){
+	// force palying a sound so the security is triggered from a human input event
+	gongSound.play();
+	// initialise the variables from the control values.
+	// set the start time.
+	setStartTime();
+	betweenRoundsTimeChange();
+	warningTimeChange();
+
+	message="";
+
+	if (timer > 0 ){
+		clearTimeout(timer);
+		timer = 0;
+	}
+	updateTime();
+	document.body.style.backgroundColor = "pink";
+	
+	// if the startWithChange checkbox is set, then start in the change mode.
+	var startWithChange = document.getElementById("startWithChange"); 
+	if ( startWithChange.checked   ){
+			
+			document.body.style.backgroundColor = "yellow";
+			countDownDate = new Date().getTime() + (1000 * (betweenRoundsTime + 1));
+			betweenRoundsFirst = false;
+			message="CHANGE ";
+		}
+
+	document.getElementById("startButton").style.display = 'none'; 
+	document.getElementById("pauseButton").style.display = 'block'; 
+}
+
+function stop()
+{
+	message = "";
+	clearTimeout(timer);
+	countDownDate  = 0;
+	document.getElementById("dTime").innerHTML = "0:00";
+	document.body.style.backgroundColor = "yellow";
+
+	document.getElementById("startButton").style.display = 'block'; 
+	document.getElementById("pauseButton").style.display = 'none'; 
+	document.getElementById("resumeButton").style.display = 'none'; 
+}
+
+
+function pause(){
+	message="PAUSED";
+	document.getElementById("dMessage").innerHTML =  message 
+	clearTimeout(timer);
+	document.getElementById("resumeButton").style.display = 'block'; 
+	document.getElementById("pauseButton").style.display = 'none'; 
+
+}
+
+function resume()
+{
+	message="";
+	document.getElementById("dMessage").innerHTML =  message 
+
+	document.getElementById("startButton").style.display = 'none'; 
+	document.getElementById("pauseButton").style.display = 'block'; 
+	document.getElementById("resumeButton").style.display = 'none'; 
+	// reset the reference clock  to now + time remaining + 1 sec
+	countDownDate = new Date().getTime() + (1000 * (remainingSeconds + 1));
+
+	updateTime();
+}
+
+function setStartTime(){
+	betweenRoundsFirst = true;
+	betweenRoundsTimeChange();
+	roundsTimeChange();
+	countDownDate = new Date().getTime() + (1000 * (countDownTimeSeconds + 1));
+}
+
+
+//setStartTime();
+function formatTime(i) {
+  if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+  return i;
+}
+
+function warningTimeChange()
+{
+	//warningTime = 10;
+	var warningTimeElement = document.getElementById("WarningTime");
+	warningTime = parseInt(warningTimeElement.options[warningTimeElement.selectedIndex].value);
+}
+
+function betweenRoundsTimeChange()
+{
+	var betweenTimeElement = document.getElementById("BetweenTime");
+	betweenRoundsTime = parseInt(betweenTimeElement.options[betweenTimeElement.selectedIndex].value);
+}
+
+function roundsTimeChange()
+{
+	var rountTimeElement = document.getElementById("RoundTime");
+	countDownTimeSeconds = parseInt(rountTimeElement.options[rountTimeElement.selectedIndex].value);
+}
+
+
+
+
+// Update the count down every 1 second
+function updateTime(){
+	timer = setInterval(function() {
+
+	  // Get today's date and time
+	  var now = new Date().getTime();
+		
+	  // Find the remainingTime between now and the count down date
+	  var remainingTime = countDownDate - now;
+
+	  // Time calculations for  minutes and seconds
+	  var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+	  var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+	  remainingSeconds = minutes*60 + seconds;
+	 
+	  // Output the result in an element with id="displayTime"
+	  document.getElementById("dTime").innerHTML =   minutes + ":" + formatTime(seconds) ;
+	  document.getElementById("dMessage").innerHTML =  message 
+
+		  // If the count down is over, write some text 
+	  if (remainingTime <= (1000*warningTime) ) {
+			beepSound.play();
+		}
+		// play a beep at 60 seconds to go
+		if (minutes  == 1  && seconds == 0 ) {
+			censoredSound.play();
+		}
+		
+		
+	  // If the count down is over, write some text 
+	  if (remainingTime <= 1000) {
+		//setStartTime();
+		gongSound.play();
+		if ( document.body.style.backgroundColor == 'lightblue' )
+		{
+			document.body.style.backgroundColor = "pink";
+		}
+		else
+		{
+			document.body.style.backgroundColor = "lightblue";
+		}
+		document.getElementById("dTime").innerHTML = "0:00";
+		
+		if ( betweenRoundsTime > 0 && betweenRoundsFirst  ){
+			document.body.style.backgroundColor = "yellow";
+			countDownDate = new Date().getTime() + (1000 * (betweenRoundsTime + 1));
+			betweenRoundsFirst = false;
+			message="CHANGE";
+		}
+		else {
+			betweenRoundsFirst = true;
+			setStartTime();
+			message = "";
+			document.getElementById("dMessage").innerHTML =  message 
+		}
+		
+		
+	  }
+	}, 1000);
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>
