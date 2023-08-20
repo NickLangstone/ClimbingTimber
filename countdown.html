@@ -8,8 +8,14 @@
 <style>
 
 
+/**
+CountDown Timer -- intended to countdown to the start of the event or some other point. 
+A simple countdown timer.
+
+**/
+
 body {
-  background-color: pink;
+  background-color: yellow;
 }
 
 
@@ -168,10 +174,16 @@ body {
   clear: both;
 }
 
+
+input[type=number]::-webkit-inner-spin-button {
+    opacity: 1
+}
+
+
 </style>
 </head>
 <body id='body'>
-<div class="topright" ><a   href="./countdown.html">Countdown timer</a></div>
+	<div  class="topright "><a href="./eventTimer.html">Event timer</a></div>
 
 <div id="displayTime"  class="displayTime">
 	<span id="dTime" class="dTime" >0.00</span>
@@ -184,57 +196,33 @@ body {
 
 
 <div class=" row"  style="width:98%;">
-	<div class="column" style="width:26%;  overflow: hidden; " >
+	
+	<div class="column" style="width:26%; overflow: hidden; " >
 		<button id="startButton" class="button "   onclick='start()'>Start</button>
 		<button id="pauseButton" class="button  pause"   onclick='pause()'>Pause</button>
 		<button id="resumeButton" class="button  resume"   onclick='resume()'>Resume</button>
 	</div>
-	<div class="column" style="width:30%;" >
-		<div class="dropdownLabels   ">Round time:
-			<select id="RoundTime" onchange="roundsTimeChange();" >
-			<option value="5">5 seconds</option>
-			<option value="60">1 Minute</option>
-			<option value="120">2 Minutes</option>
-			<option value="180">3 Minutes</option>
-			<option value="240">4 Minutes</option>
-			<option value="300" selected>5 Minutes</option>
-			<option value="360">6 Minutes</option>
-			<option value="420">7 Minutes</option>
-			<option value="480">8 Minutes</option>
-			<option value="540">9 Minutes</option>
-			<option value="600">10 Minutes</option>
-			</select>
-		</div>
 
-		<div class="dropdownLabels" >Warning Time: 
+
+	<div class="column" style="width:30%;">
+		<div class="dropdownLabels   ">Countdown time:	
+			<input type="number" id="countdowntime"  value="30" min="1" max="999"> (minutes)
+		</div>
+	</div>
+	<div class="column" style="width:24%;">
+
+		<div class="dropdownLabels" >Warning pips: 
 			<select id="WarningTime" onchange="warningTimeChange();">
 			<option value="0" selected>0 Sec</option>
 			<option value="5">5 Sec</option>
 			<option value="10">10 Sec</option>
-			<option value="15">15 Sec</option>
-			<option value="20">20 Sec</option>
-			</select>
-		</div>
-
-	</div>
-	<div class="column" style="width:24%;">
-		<div class="dropdownLabels">Time Between Rounds:
-			<select id="BetweenTime" onchange="betweenRoundsTimeChange();" >
-			<option value="0" selected>0</option>
-			<option value="5">5 Sec</option>
-			<option value="10">10 Sec</option>
-			<option value="15">15 Sec</option>
-			<option value="20">20 Sec</option>
 			<option value="30">30 Sec</option>
-			<option value="45">45 Sec</option>
 			<option value="60">60 Sec</option>
 			</select>
 		</div>
 
-		<label class="container dropdownLabels">Start with change timer
-		<input id="startWithChange" type="checkbox">
-		<span class="checkmark"></span>
-		</label>
+		
+
 	</div>
 
 	<div class="column" style="width:11%">
@@ -277,12 +265,10 @@ var betweenRoundsFirst=true;
 var message = "";
 
 function start(){
-	// force palying a sound so the security is triggered from a human input event
-	gongSound.play();
+	
 	// initialise the variables from the control values.
 	// set the start time.
 	setStartTime();
-	betweenRoundsTimeChange();
 	warningTimeChange();
 
 	message="";
@@ -292,13 +278,11 @@ function start(){
 		timer = 0;
 	}
 	updateTime();
-	document.body.style.backgroundColor = "pink";
 	
 	// if the startWithChange checkbox is set, then start in the change mode.
 	var startWithChange = document.getElementById("startWithChange"); 
 	if ( startWithChange.checked   ){
-			
-			document.body.style.backgroundColor = "yellow";
+			//document.body.style.backgroundColor = "yellow";
 			countDownDate = new Date().getTime() + (1000 * (betweenRoundsTime + 1));
 			betweenRoundsFirst = false;
 			message="CHANGE ";
@@ -314,7 +298,7 @@ function stop()
 	clearTimeout(timer);
 	countDownDate  = 0;
 	document.getElementById("dTime").innerHTML = "0:00";
-	document.body.style.backgroundColor = "yellow";
+	//document.body.style.backgroundColor = "yellow";
 
 	document.getElementById("startButton").style.display = 'block'; 
 	document.getElementById("pauseButton").style.display = 'none'; 
@@ -347,13 +331,11 @@ function resume()
 
 function setStartTime(){
 	betweenRoundsFirst = true;
-	betweenRoundsTimeChange();
+	
 	roundsTimeChange();
 	countDownDate = new Date().getTime() + (1000 * (countDownTimeSeconds + 1));
 }
 
-
-//setStartTime();
 function formatTime(i) {
   if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
   return i;
@@ -366,19 +348,11 @@ function warningTimeChange()
 	warningTime = parseInt(warningTimeElement.options[warningTimeElement.selectedIndex].value);
 }
 
-function betweenRoundsTimeChange()
-{
-	var betweenTimeElement = document.getElementById("BetweenTime");
-	betweenRoundsTime = parseInt(betweenTimeElement.options[betweenTimeElement.selectedIndex].value);
-}
-
 function roundsTimeChange()
 {
-	var rountTimeElement = document.getElementById("RoundTime");
-	countDownTimeSeconds = parseInt(rountTimeElement.options[rountTimeElement.selectedIndex].value);
+	var rountTimeElement = document.getElementById("countdowntime");
+	countDownTimeSeconds = parseInt(rountTimeElement.value * 60);
 }
-
-
 
 
 // Update the count down every 1 second
@@ -401,7 +375,7 @@ function updateTime(){
 	  document.getElementById("dTime").innerHTML =   minutes + ":" + formatTime(seconds) ;
 	  document.getElementById("dMessage").innerHTML =  message 
 
-		  // If the count down is over, write some text 
+		  
 	  if (remainingTime <= (1000*warningTime) ) {
 			beepSound.play();
 		}
@@ -411,41 +385,17 @@ function updateTime(){
 		}
 		
 		
-	  // If the count down is over, write some text 
+	  // If the count down is over, clear the time ans message
 	  if (remainingTime <= 1000) {
 		//setStartTime();
 		gongSound.play();
-		if ( document.body.style.backgroundColor == 'lightblue' )
-		{
-			document.body.style.backgroundColor = "pink";
-		}
-		else
-		{
-			document.body.style.backgroundColor = "lightblue";
-		}
-		document.getElementById("dTime").innerHTML = "0:00";
-		
-		if ( betweenRoundsTime > 0 && betweenRoundsFirst  ){
-			document.body.style.backgroundColor = "yellow";
-			countDownDate = new Date().getTime() + (1000 * (betweenRoundsTime + 1));
-			betweenRoundsFirst = false;
-			message="CHANGE";
-		}
-		else {
-			betweenRoundsFirst = true;
-			setStartTime();
-			message = "";
-			document.getElementById("dMessage").innerHTML =  message 
-		}
-		
-		
+
+		document.getElementById("dTime").innerHTML = "0:00";	
+		document.getElementById("dMessage").innerHTML =  "";
+		stop();
 	  }
 	}, 1000);
 }
-
-
-
-
 
 </script>
 
