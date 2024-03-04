@@ -420,7 +420,8 @@ function updateTime(){
 
 		  // If the count down is over, write some text 
 	  if (remainingTime <= (1000*warningTime) ) {
-			beepSound.play();
+			//beepSound.play();
+			document.body.style.backgroundColor = "yellow";
 		}
 		// play a beep at 60 seconds to go
 		if (minutes  == 1  && seconds == 0 ) {
